@@ -1,0 +1,9 @@
+POST http://localhost:8080/auctions
+Content-Type: application/json
+
+{
+  "product_name": "chapeu",
+  "category": "roupas",
+  "description": "chapeu de palha",
+  "condition": 0
+}
