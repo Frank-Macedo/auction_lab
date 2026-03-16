@@ -2,41 +2,33 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
-	"lab_fullcyle-auction_go/configuration/logger"
 	"os"
-	"strings"
 
+	"github.com/Frank-Macedo/lab_auction/configuration/logger"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
-	MONGODB_URL = "MONGO_URL"
-	MONGODB_DB  = "MONGO_DB"
+	MONGODB_URL = "MONGODB_URL"
+	MONGODB_DB  = "MONGODB_DB"
 )
 
 func NewMongoDBConnection(ctx context.Context) (*mongo.Database, error) {
+	mongoURL := os.Getenv(MONGODB_URL)
 	mongoDatabase := os.Getenv(MONGODB_DB)
 
-	uri := strings.TrimSpace(os.Getenv(MONGODB_URL))
-
-	fmt.Println("URL:", os.Getenv(MONGODB_URL))
-	fmt.Println("DB:", os.Getenv(MONGODB_DB))
-
 	client, err := mongo.Connect(
-		ctx,
-		options.Client().ApplyURI(uri),
-	)
-
+		ctx, options.Client().ApplyURI(mongoURL))
 	if err != nil {
-		logger.Error("Failed to connect to MongoDB", err)
+		logger.Error("Error trying to connect to mongodb database", err)
 		return nil, err
 	}
 
 	if err := client.Ping(ctx, nil); err != nil {
-		logger.Error("Failed to ping MongoDB", err)
+		logger.Error("Error trying to ping mongodb database", err)
 		return nil, err
 	}
+
 	return client.Database(mongoDatabase), nil
 }
