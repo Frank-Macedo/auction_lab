@@ -41,7 +41,7 @@ Diferente de sistemas que dependem de CRON jobs, esta API utiliza **timers em me
 | :--- | :--- | :--- |
 | `MONGO_URL` | String de conexão MongoDB | `mongodb://localhost:27017` |
 | `MONGO_DB` | Nome do banco de dados | `auctions` |
-| `AUCTION_END_TIME` | Duração do leilão em segundos | `60` |
+| `AUCTION_INTERVAL` | Duração do leilão em segundos | `20s` |
 | `BATCH_INSERT_INTERVAL` | Intervalo de escrita em lote | `7m` |
 | `MAX_BATCH_SIZE` | Limite de itens por batch | `10` |
 
@@ -50,23 +50,69 @@ Diferente de sistemas que dependem de CRON jobs, esta API utiliza **timers em me
 ## 🛠️ Como Executar
 
 ### 1. Requisitos
-- Go 1.25+
-- MongoDB rodando na porta 27017
 
-### 2. Instalação e Execução
+- Docker
+- Docker Compose
+
+### 2. Clonar o repositório
+
 ```bash
-# Clone o repositório
-git clone -b sua-branch [https://github.com/seu-repo/auction-api.git](https://github.com/seu-repo/auction-api.git)
+git clone -b sua-branch https://github.com/seu-repo/auction-api.git
 cd auction-api
+```
 
-# Instale as dependências
-go mod tidy
+### 3. Subir a aplicação com Docker
 
-# Execute a aplicação
-go run ./cmd/auction/main.go
+O projeto utiliza **Docker Compose** para subir a API e o MongoDB automaticamente.
 
+```bash
+docker compose up --build
+```
 
-Testes localizados em cmd/internal/infra/database/auction/create_auction_test.go
-:
+Após subir os containers:
 
+- API disponível em: http://localhost:8080  
+- MongoDB rodando na porta: 27017
+
+### 4. Parar os containers
+
+```bash
+docker compose down
+```
+
+---
+
+## Estrutura de Containers
+
+O `docker-compose` sobe dois serviços:
+
+- **app** → API escrita em Go  
+- **mongodb** → Banco de dados MongoDB  
+
+Os dados do MongoDB são persistidos em um volume Docker chamado **mongo-data**.
+
+---
+
+## Variáveis de Ambiente
+
+As variáveis de ambiente são carregadas a partir do arquivo:
+
+```
+cmd/auction/.env
+```
+
+---
+
+## Executar Testes
+
+Os testes estão localizados em:
+
+```
+cmd/internal/infra/database/auction/create_auction_test.go
+```
+
+Para executar todos os testes do módulo:
+
+```bash
 go test ./cmd/internal/infra/database/auction/...
+```
