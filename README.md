@@ -108,11 +108,11 @@ cmd/auction/.env
 Os testes estão localizados em:
 
 ```
-cmd/internal/infra/database/auction/create_auction_test.go
+internal/infra/database/auction/create_auction_test.go
 ```
 
 Para executar todos os testes do módulo:
 
 ```bash
-go test ./cmd/internal/infra/database/auction/...
+go test ./internal/infra/database/auction/...
 ```
